@@ -1,0 +1,16 @@
+{
+  "name": "minidashboard",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "recharts": "^3.8.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^6.0.2"
+  }
+}
