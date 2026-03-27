@@ -1,16 +1,7 @@
 {
-  "compilerOptions": {
-    "target": "ES6",
-    "lib": ["ES6", "ES2017", "DOM"],
-    "jsx": "react-jsx",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": false,
-    "skipLibCheck": true,
-    "resolveJsonModule": true,
-    "outDir": "./dist"
-  },
-  "include": ["src"]
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
 }
