@@ -1,5 +1,11 @@
-// src/api/pages/Dashboard.tsx
-
+// src/api/pages/Dashboard.tsx  (updated)
+// ─────────────────────────────────────────────────────────────
+// Changes from original:
+//   + Imports RegionPieChart and TopCountriesBarChart
+//   + Adds a second row of charts below the existing bar chart
+//   + Both new charts receive `loading` prop for skeleton UX
+// ─────────────────────────────────────────────────────────────
+ 
 import React, { useEffect, useState } from "react";
 import {
   fetchAllCountries,
@@ -11,12 +17,15 @@ import KPICard from "../../KPICard";
 import Chart from "../../Chart";
 import ErrorBoundary from "../../ErrorBoundary";
 import { KPICardSkeleton, ChartSkeleton } from "../../Skeleton";
-
+ 
+// ── NEW imports ──────────────────────────────────────────────
+import { RegionPieChart, TopCountriesBarChart } from "../../ExtraCharts";
+ 
 const Dashboard: React.FC = () => {
   const [countries, setCountries] = useState<Country[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+ 
   useEffect(() => {
     fetchAllCountries()
       .then((data) => {
@@ -28,12 +37,12 @@ const Dashboard: React.FC = () => {
         setLoading(false);
       });
   }, []);
-
+ 
   const totalPopulation = countries.reduce((sum, c) => sum + c.population, 0);
   const regionData = getPopulationByRegion(countries);
   const topCountry = getTopCountries(countries, 1)[0];
   const uniqueRegions = [...new Set(countries.map((c) => c.region))].filter(Boolean);
-
+ 
   return (
     <div
       style={{
@@ -53,7 +62,7 @@ const Dashboard: React.FC = () => {
           Live data from REST Countries API
         </p>
       </div>
-
+ 
       {/* Error state */}
       {error && (
         <div
@@ -69,7 +78,7 @@ const Dashboard: React.FC = () => {
           ❌ Failed to load data: {error}
         </div>
       )}
-
+ 
       {/* KPI Cards Row */}
       <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", marginBottom: "24px" }}>
         {loading ? (
@@ -106,23 +115,44 @@ const Dashboard: React.FC = () => {
               title="Most Populous"
               value={topCountry?.name.common ?? "—"}
               icon="📈"
-              subtitle={topCountry ? `${(topCountry.population / 1_000_000_000).toFixed(2)}B people` : ""}
+              subtitle={
+                topCountry
+                  ? `${(topCountry.population / 1_000_000_000).toFixed(2)}B people`
+                  : ""
+              }
               accent="#ef4444"
             />
           </>
         )}
       </div>
-
-      {/* Chart */}
+ 
+      {/* ── Row 1: Original bar chart ── */}
       <ErrorBoundary>
-        {loading ? (
-          <ChartSkeleton />
-        ) : (
-          <Chart data={regionData} title="Population by Region" />
-        )}
+        {loading ? <ChartSkeleton /> : <Chart data={regionData} title="Population by Region" />}
       </ErrorBoundary>
+ 
+      {/* ── Row 2: NEW charts side-by-side ── */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1.6fr",   // pie narrower, bar chart wider
+          gap: "20px",
+          marginTop: "20px",
+          alignItems: "start",
+        }}
+      >
+        {/* Pie chart – region share */}
+        <ErrorBoundary>
+          <RegionPieChart data={regionData} loading={loading} />
+        </ErrorBoundary>
+ 
+        {/* Horizontal bar chart – top 10 countries */}
+        <ErrorBoundary>
+          <TopCountriesBarChart countries={countries} loading={loading} topN={10} />
+        </ErrorBoundary>
+      </div>
     </div>
   );
 };
-
+ 
 export default Dashboard;
