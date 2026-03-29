@@ -13,7 +13,7 @@ import {
   getTopCountries,
   type Country,
 } from "../countryApi";
-import KPICard from "../../KPICrad";
+import KPICard from "../../KPICard";
 import Chart from "../../Chart";
 import ErrorBoundary from "../../ErrorBoundary";
 import { KPICardSkeleton, ChartSkeleton } from "../../Skeleton";
