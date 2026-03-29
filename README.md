@@ -1,6 +1,6 @@
 # 🌍 MiniDashBoard
 
-A responsive React + TypeScript dashboard that displays real-time world country data using the [REST Countries API](https://restcountries.com). Built as a collaborative group project using a feature-branch Git workflow.
+A responsive React + TypeScript dashboard displaying real-time world country data using the [REST Countries API](https://restcountries.com). Built as a collaborative group project using a feature-branch Git workflow.
 
 ---
 
@@ -8,10 +8,10 @@ A responsive React + TypeScript dashboard that displays real-time world country 
 
 | Member | Branch | Files Handled |
 |---|---|---|
-| Gaurish Julka | `countryApi/Gaurish` | `countryApi.ts`, `Dashboard.tsx` |
-| Venu Yelsani | `Venu` | `Chart.tsx`, `Skeleton.tsx` |
-| Ruturaj Shimpi | `feature/kpi-card` | `KPICard.tsx`, `ErrorBoundary.tsx` |
-| Arpit Sharma | `feature/arpit` | `ErrorBoundary.tsx`, `README.md` |
+| Gaurish Julka | `countryApi/Gaurish` | `countryApi.ts`, `Dashboard.tsx`, `ExtraCharts.tsx` |
+| Venu Yelsani | `Venu` / `Charts/Venu` | `Chart.tsx`, `Skeleton.tsx` |
+| Ruturaj Shimpi | `feature/kpi-card` | `KPICard.tsx` |
+| Arpit Sharma | `Errorboundaries/arpit` | `ErrorBoundary.tsx` |
 
 ---
 
@@ -23,30 +23,35 @@ MiniDashBoard/
 ├── src/
 │   ├── api/
 │   │   ├── pages/
-│   │   │   └── Dashboard.tsx      # Main dashboard page
-│   │   └── countryApi.ts          # API fetch functions & helpers
-│   ├── Chart.tsx                  # Recharts bar chart component
-│   ├── ErrorBoundary.tsx          # Error boundary wrapper
-│   ├── KPICard.tsx                # KPI metric card component
-│   ├── Skeleton.tsx               # Loading skeleton components
+│   │   │   └── Dashboard.tsx       # Main dashboard page
+│   │   └── countryApi.ts           # API fetch functions & helpers
+│   ├── Chart.tsx                   # Population by region bar chart
+│   ├── ErrorBoundary.tsx           # Error boundary wrapper with retry
+│   ├── ExtraCharts.tsx             # Pie chart + Top countries bar chart
+│   ├── KPICard.tsx                 # KPI metric card component
+│   ├── Skeleton.tsx                # Shimmer loading skeletons
 │   ├── App.tsx
-│   └── main.tsx
+│   ├── main.tsx
+│   └── index.css
 ├── index.html
 ├── package.json
 ├── tsconfig.json
-└── vite.config.ts
+├── vite.config.ts
+└── README.md
 ```
 
 ---
 
 ## ✨ Features
 
-- 🌐 **Live API Data** — Fetches real-time data from REST Countries API
+- 🌐 **Live API Data** — Real-time data from REST Countries API (~250 countries)
 - 📊 **Bar Chart** — Population by region using Recharts
+- 🥧 **Pie Chart** — Region share of world population
+- 🏆 **Top 10 Countries** — Horizontal bar chart of most populous countries
 - 🃏 **KPI Cards** — Total countries, population, regions, most populous country
 - ⏳ **Skeleton Loaders** — Shimmer placeholders while data loads
-- 🛡️ **Error Boundary** — Gracefully handles component crashes with retry option
-- 🌙 **Dark Theme** — Navy dark UI with amber accents
+- 🛡️ **Error Boundary** — Gracefully handles component crashes with retry
+- 🌙 **Dark Theme** — Navy dark UI with amber gold accents
 
 ---
 
@@ -57,7 +62,7 @@ MiniDashBoard/
 | React 19 | UI framework |
 | TypeScript | Type safety |
 | Vite | Build tool & dev server |
-| Recharts | Bar chart visualization |
+| Recharts | Charts & data visualization |
 | REST Countries API | Live country data source |
 
 ---
@@ -105,13 +110,13 @@ This project follows the **Feature Branch Workflow**:
 
 ```
 main
- ├── countryApi/Gaurish   → countryApi.ts + Dashboard.tsx
- ├── Venu                 → Chart.tsx + Skeleton.tsx
- ├── feature/kpi-card     → KPICard.tsx
- └── feature/arpit        → ErrorBoundary.tsx
+ ├── countryApi/Gaurish     → countryApi.ts + Dashboard.tsx + ExtraCharts.tsx
+ ├── Venu / Charts/Venu     → Chart.tsx + Skeleton.tsx
+ ├── feature/kpi-card       → KPICard.tsx
+ └── Errorboundaries/arpit  → ErrorBoundary.tsx
 ```
 
-Each member worked on their own branch and submitted a **Pull Request** to merge into `main`.
+Each member worked on their own branch and submitted a **Pull Request** to merge into `main`. Conflicts were resolved via terminal before merging.
 
 ---
 
@@ -127,9 +132,9 @@ Each member worked on their own branch and submitted a **Pull Request** to merge
 ### Helper Functions (`countryApi.ts`)
 
 ```typescript
-fetchAllCountries()         // Fetches all ~250 countries
-getPopulationByRegion()     // Groups countries by region, sums population
-getTopCountries(n)          // Returns top N most populous countries
+fetchAllCountries()           // Fetches all ~250 countries
+getPopulationByRegion()       // Groups countries by region, sums population
+getTopCountries(n)            // Returns top N most populous countries
 ```
 
 ---
@@ -150,14 +155,22 @@ Displays a single metric with title, value, icon, subtitle and a colored left bo
 ```
 
 ### `Chart`
-Renders a bar chart of population grouped by world region.
+Bar chart showing population grouped by world region.
 
 ```tsx
 <Chart data={regionData} title="Population by Region" />
 ```
 
+### `ExtraCharts`
+Two additional charts — a pie chart for region share and a horizontal bar chart for top countries.
+
+```tsx
+<RegionPieChart data={regionData} loading={loading} />
+<TopCountriesBarChart countries={countries} loading={loading} topN={10} />
+```
+
 ### `Skeleton`
-Loading placeholders shown while API data is being fetched.
+Shimmer loading placeholders shown while API data is fetched.
 
 ```tsx
 <KPICardSkeleton />
@@ -175,7 +188,7 @@ Wraps components to catch runtime errors and show a fallback UI with a retry but
 
 ---
 
-## 🔧 Configuration Files
+## 🔧 Key Configuration
 
 ### `tsconfig.json`
 ```json
@@ -195,8 +208,15 @@ Wraps components to catch runtime errors and show a fallback UI with a retry but
 }
 ```
 
+### `.gitignore`
+```
+node_modules/
+dist/
+.env
+```
+
 ---
 
 ## 📝 License
 
-This project was built for educational purposes as part of a BCA Data Science group assignment at **Pillai College of Arts, Commerce & Science, Mumbai**.
+This project was built for educational purposes as part of a BCA Data Science group assignment at **Pillai College of Arts, Commerce & Science, Mumbai (2025-26)**.
